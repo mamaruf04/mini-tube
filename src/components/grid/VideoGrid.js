@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchVideos } from "../../features/videos/videoSlice";
+import { fetchVideos } from "../../features/videos/videosSlice";
 import Loading from "../ui/Loading";
 import VideoGridItem from "./VideoGridItem";
 
@@ -8,10 +8,11 @@ export default function VideGrid() {
 
     const dispatch = useDispatch();
     const {videos, isLoading, isError, error} = useSelector(state => state.videos);
+    const {tags, search} = useSelector(state => state.filter);
 
     useEffect(() =>{
-        dispatch(fetchVideos())
-    },[dispatch])
+        dispatch(fetchVideos({tags, search}))
+    },[dispatch, tags, search])
 
     let content;
 
@@ -22,7 +23,7 @@ export default function VideGrid() {
     if (!isError && !isLoading && videos?.length === 0) content= <div className="col-span-12">sorry! No video found.</div>
 
 
-    if (!isError && !isLoading && videos?.length > 0) content= videos.map(video => <VideoGridItem key={video.key} video={video}></VideoGridItem>)
+    if (!isError && !isLoading && videos?.length > 0) content= videos.map(video => <VideoGridItem key={video.id} video={video}></VideoGridItem>)
 
     return (
         <section className="pt-12">
